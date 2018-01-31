@@ -105,9 +105,10 @@ end
 
 %% send joint torques
 setTorqueControlMode(jc);
-jntTorqueCmd = [1.9;0;0;0;0;0.5];
+jntTorqueCmd = [1.5;0.0;0;0;0;0.8];
 for i=1:100
    sendJointTorqueCommand(jc,jntTorqueCmd); 
+   pause(0.01)
 end
 
 
@@ -116,6 +117,7 @@ end
 
 
 %% Disconnect from robot and unload library
+setPositionControlMode(jc);
 disconnect(jc);
 
 
