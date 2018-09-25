@@ -931,7 +931,6 @@ bool setProtectionZone(double *zone)
         MyGetProtectionZone(zoneList);
        
         zones.NbZones = zoneList.NbZones + 1;
-        mexPrintf("%d",zones.NbZones);
         zones.Zones[zones.NbZones].zoneShape.shapeType = PrismSquareBase_Z;
         zones.Zones[zones.NbZones].zoneShape.Points[0].X = zone[0];
         zones.Zones[zones.NbZones].zoneShape.Points[0].Y = zone[1];
@@ -972,7 +971,6 @@ bool getGlobalTrajectoryInfo(double *info)
         info[0] = FIFO.TrajectoryCount;
         info[1] = FIFO.UsedPercentage;
         info[2] = FIFO.MaxSize;
-        mexPrintf("FIFO.TrajectoryCount : %d FIFO.UsedPercentage : %lf FIFO.MaxSize : %d\n",FIFO.TrajectoryCount,FIFO.UsedPercentage,FIFO.MaxSize);
         return true;
     }
     

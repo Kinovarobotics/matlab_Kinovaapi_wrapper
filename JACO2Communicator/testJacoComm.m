@@ -50,6 +50,14 @@ jc.FingerTemp
 jc.EndEffectorPose
 %%
 jc.EndEffectorWrench
+%%
+jc.ProtectionZone
+%%
+jc.EndEffectorOffset
+%%
+jc.DOF
+%%
+jc.TrajectoryInfo
 
 
 %% Methods to query joint and finger values all at once
@@ -76,7 +84,13 @@ goToHomePosition(jc);
 % finished, execute again setPositionControlMode(jc);
 setTorqueControlMode(jc);
 
-setPositionControlMode(jc);
+
+%% Start admittance mode
+% You can move the robot in admitance mode. When you are
+% finished, execute jc.StopForceControl;
+jc.StartForceControl;
+
+
 %% Send joint positions
 q_home = [4.806;2.924;1.004;4.204;1.445;1.323];
 jntCmd = q_home;
@@ -114,8 +128,40 @@ for i=1:100
 end
 
 
+%% Send cartesian positions
+setPositionControlMode(jc);
+CartPosCmd = [0.05;0;0;0;0;0];
+sendCartesianPositionCommand(jc,CartPosCmd)
+
+
+%% Send cartesian velocity
+for i=1:100
+CartVelCmd = [0;0;-0.1;0;0;0];
+sendCartesianVelocityCommand(jc,CartVelCmd);
+end
+
+%% Set End Effector Offset
+offsetCmd = [0;0;0;0];
+jc.setEndEffectorOffset(offsetCmd);
+
+
 %% Run gravity calibration (will block until it finishes, not interruptible!)
 % runGravityCalibration(jc);
+
+
+%% Set a protection zone with a speed limit
+% See API documentation to know what to send in Zone Cmd
+% Search for setProtectionZone
+ZoneCmd = [0;-0.52;0;0;0;0;...
+           0;0;0;...
+           0.5;0;0;...
+           0.5;-0.52;0;...
+           0.63;...
+           0.01;0.01];
+jc.setProtectionZone(ZoneCmd)
+
+%% Delete all protection zones
+jc.EraseAllProtectionZones
 
 
 %% Disconnect from robot and unload library
