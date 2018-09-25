@@ -10,7 +10,7 @@
 #include <iostream>
 
 
-#define NUM_JOINTS  7
+#define NUM_JOINTS  6
 #define NUM_FINGERS 3
 #define JACO_SDK_WRAPPER_TINY_NUMBER 0.00001
 
