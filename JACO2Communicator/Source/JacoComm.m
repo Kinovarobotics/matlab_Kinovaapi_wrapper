@@ -431,6 +431,39 @@ classdef JacoComm < matlab.System & matlab.system.mixin.Propagates ...
             end
         end
         
+        function DOF = get.DOF(obj)
+            if obj.IsConnected
+                DOF = obj.getDOF();
+            else
+                DOF = 0;
+            end
+        end
+        
+        function off = get.EndEffectorOffset(obj)
+            if obj.IsConnected
+                off = obj.getEndEffectorOffset;
+            else
+                off = [];
+            end
+        end
+        
+        function zone = get.ProtectionZone(obj)
+            if obj.IsConnected
+                zone = obj.getProtectionZone;
+            else
+                zone = [];
+            end
+        end
+        
+        function info = get.TrajectoryInfo(obj)
+            if obj.IsConnected
+                info = obj.getTrajectoryInfo;
+            else
+                info = [];
+            end
+        end
+        
+        
         function sendWaypoints(obj,Q,T) 
             % blocking function
              % Q Joint Positions [numPoints, numJoints]
@@ -609,6 +642,68 @@ classdef JacoComm < matlab.System & matlab.system.mixin.Propagates ...
             end
             fee = wrench;  
         end
+        
+        function dof = getDOF(obj)
+            % no input validation 
+            stat = false; %#ok<NASGU>
+            DOF = 0;
+            if coder.target('MATLAB')
+                [stat,~,~,~,~,~,~,DOF,~,~,~] =  JacoMexInterface(double(MexFunctionIDs.GET_DOF),...
+                    obj.JntPosCmd,obj.JntVelCmd,obj.JntTorqueCmd,obj.FingerPosCmd, obj.CartPosCmd,obj.CartVelCmd,obj.OffsetCmd,obj.ZoneCmd);
+            else                
+                stat = coder.ceval('GetDOF',coder.wref(DOF));
+            end
+            if ~stat
+                error('Failed to get number of DOF');
+            end
+            dof = DOF;
+        end  
+        
+        function oee = getEndEffectorOffset(obj)
+            stat = false; %#ok<NASGU>
+            offset = zeros(4,1);
+            if coder.target('MATLAB')
+                [stat,~,~,~,~,~,~,~,offset,~,~] =  JacoMexInterface(double(MexFunctionIDs.GET_EE_OFFSET),...
+                    obj.JntPosCmd,obj.JntVelCmd,obj.JntTorqueCmd,obj.FingerPosCmd,obj.CartPosCmd,obj.CartVelCmd,obj.OffsetCmd,obj.ZoneCmd);
+            else                
+                stat = coder.ceval('getEndEffectorOffset',coder.wref(offset));
+            end
+            if ~stat
+                error('Failed to get end effector offset');
+            end
+            oee = offset;  
+        end
+        
+        function Pzone = getProtectionZone(obj)
+            stat = false; %#ok<NASGU>
+            zone = 0;
+            if coder.target('MATLAB')
+                [stat,~,~,~,~,~,~,~,~,~,zone] =  JacoMexInterface(double(MexFunctionIDs.GET_PROTECT_ZONE),...
+                    obj.JntPosCmd,obj.JntVelCmd,obj.JntTorqueCmd,obj.FingerPosCmd,obj.CartPosCmd,obj.CartVelCmd,obj.OffsetCmd,obj.ZoneCmd);
+            else                
+                stat = coder.ceval('getProtectionZone',coder.wref(zone));
+            end
+            if ~stat
+                error('Failed to get protection zone');
+            end
+            Pzone = zone;  
+        end
+        
+        function info = getTrajectoryInfo(obj)
+            stat = false; %#ok<NASGU>
+            Tinfo = 0;
+            if coder.target('MATLAB')
+                [stat,~,~,~,~,~,~,~,~,~,Tinfo] =  JacoMexInterface(double(MexFunctionIDs.GET_GLOB_TRAJECTORY),...
+                    obj.JntPosCmd,obj.JntVelCmd,obj.JntTorqueCmd,obj.FingerPosCmd,obj.CartPosCmd,obj.CartVelCmd,obj.OffsetCmd,obj.ZoneCmd);
+            else                
+                stat = coder.ceval('getTrajectoryInfo',coder.wref(Tinfo));
+            end
+            if ~stat
+                error('Failed to get TrajectoryInfo');
+            end
+            info = Tinfo;  
+        end
+        
         
         function sendJointPositionCommandInternal(obj,cmd)
             % no input validation 
