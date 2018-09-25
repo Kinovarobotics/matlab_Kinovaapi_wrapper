@@ -914,8 +914,9 @@ classdef JacoComm < matlab.System & matlab.system.mixin.Propagates ...
             
         end
 
-        function [JointPos,JointVel,JointTorque,JointTemp,FingerPos,FingerVel,FingerTorque,FingerTemp,Pee,Fee] = stepImpl(obj,varargin)
+        function [JointPos,JointVel,JointTorque,JointTemp,FingerPos,FingerVel,FingerTorque,FingerTemp,Pee,Fee,DOF,Oee, done] = stepImpl(obj,varargin)
             stat = false;
+            done = 0;
 
             % Process inputs 
             if varargin{3} == JacoCommandModes.IDLE
@@ -947,9 +948,40 @@ classdef JacoComm < matlab.System & matlab.system.mixin.Propagates ...
                     fCmd = varargin{2};
                     obj.sendFingerPositionCommandInternal(fCmd);
                 end
+             elseif varargin{3} == JacoCommandModes.SEND_CART_POSITION_CMD
+                % send command if the command mode input changed
+                if varargin{3} ~= obj.CommandModePastValue
+                    cartCmd = varargin{4};
+                    % To pass a position matrix
+                    col = size(cartCmd);
+                    for index=1:col(2)
+                        Cmd = cartCmd(:,index);
+                        obj.sendCartesianPositionCommandInternal(Cmd);
+                    end
+                    
+                end
+            elseif varargin{3} == JacoCommandModes.SEND_CART_VELOCITY_CMD
+                 % send command if the command mode input changed
+                if varargin{3} ~= obj.CommandModePastValue
+                    cartCmd = varargin{4};
+                    % To pass a position matrix
+                    col = size(cartCmd);
+                    for index=1:col(2)
+                        Cmd = cartCmd(:,index);
+                        for i=1:10
+                            obj.sendCartesianVelocityCommandInternal(Cmd);
+                        end
+                    end
+                    
+                end
             end
             % Update past command value
             obj.CommandModePastValue = varargin{3};
+            if obj.TrajectoryInfo(1) == 0
+                % Confirm the move is done
+                done = 1;
+      
+            end
 
             
             % Generate outputs by reading sensor information               
@@ -977,7 +1009,14 @@ classdef JacoComm < matlab.System & matlab.system.mixin.Propagates ...
             Pee = obj.getEndEffectorPose();
                                    
             % End effector wrench
-            Fee = obj.getEndEffectorWrench();            
+            Fee = obj.getEndEffectorWrench();  
+            
+            % Degree of freedom
+            DOF = obj.getDOF();
+            
+            % Endeffector offset
+            Oee = obj.getEndEffectorOffset();
+                       
 
         end
 
@@ -1033,7 +1072,7 @@ classdef JacoComm < matlab.System & matlab.system.mixin.Propagates ...
         end
         
         function num = getNumInputsImpl(~)
-            num = 3;
+            num = 4;
         end
         
         function varargout = getInputNamesImpl(obj)
@@ -1061,6 +1100,8 @@ classdef JacoComm < matlab.System & matlab.system.mixin.Propagates ...
             %   4: send finger command
             varargout{3} = 'cmd_mode';
             
+            varargout{4} = 'cart_cmd';
+                        
 
         end
         
@@ -1079,6 +1120,12 @@ classdef JacoComm < matlab.System & matlab.system.mixin.Propagates ...
             validateattributes(varargin{3}, {'int32'},...
                 {'real', 'scalar', 'nonnan', 'finite'},...
                 'validateInputs', 'Command Modes'); 
+            
+            % Validate cartesian positions cmd
+            validateattributes(varargin{4}, {'numeric'},...
+                {'real', 'nonnan', 'finite', '2d','size'},...
+                'validateInputs', 'Finger positions cmd');
+ 
  
         end
 
@@ -1093,21 +1140,27 @@ classdef JacoComm < matlab.System & matlab.system.mixin.Propagates ...
             varargout{8} = true;           
             varargout{9} = true;
             varargout{10} = true;
+            varargout{11} = true;
+            varargout{12} = true;
+            varargout{13} = true;
         end
         
         
-        function [o1,o2,o3,o4,o5,o6,o7,o8,o9,o10] = getOutputSizeImpl(obj)
+        function [o1,o2,o3,o4,o5,o6,o7,o8,o9,o10,o11,o12,o13] = getOutputSizeImpl(obj)
             % Return size for each output port
-            o1 = [6 1];
-            o2 = [6 1];
-            o3 = [6 1];
-            o4 = [6 1];
-            o5 = [3 1];
-            o6 = [3 1];
-            o7 = [3 1];
-            o8 = [3 1];
-            o9 = [6 1];
-            o10 = [6 1];
+            o1 = [obj.NumJoints 1];
+            o2 = [obj.NumJoints 1];
+            o3 = [obj.NumJoints 1];
+            o4 = [obj.NumJoints 1];
+            o5 = [JacoComm.NumFingers 1];
+            o6 = [JacoComm.NumFingers 1];
+            o7 = [JacoComm.NumFingers 1];
+            o8 = [JacoComm.NumFingers 1];
+            o9 = [JacoComm.CartParam 1];
+            o10 = [JacoComm.CartParam 1];
+            o11 = [1 1];
+            o12 = [4 1];
+            o13 = [1 1];
 
             % Example: inherit size from first input port
             % out = propagatedInputSize(obj,1);
@@ -1124,6 +1177,9 @@ classdef JacoComm < matlab.System & matlab.system.mixin.Propagates ...
             varargout{8} = false;           
             varargout{9} = false;
             varargout{10} = false;
+            varargout{11} = false;
+            varargout{12} = false;
+            varargout{13} = false;
         end
         
         function varargout = getOutputDataTypeImpl(obj)
@@ -1137,6 +1193,9 @@ classdef JacoComm < matlab.System & matlab.system.mixin.Propagates ...
             varargout{8} = 'double';           
             varargout{9} = 'double';
             varargout{10} = 'double';
+            varargout{11} = 'double';
+            varargout{12} = 'double';
+            varargout{13} = 'double';
         end
         
         function icon = getIconImpl(obj)
