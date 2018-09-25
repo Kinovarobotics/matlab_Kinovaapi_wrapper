@@ -14,9 +14,9 @@ classdef JacoComm < matlab.System & matlab.system.mixin.Propagates ...
 
     properties (Access = private)
         NumJoints = 6;
-        JntPosCmd = zeros(JacoComm.NumJoints,1);
-        JntVelCmd = zeros(JacoComm.NumJoints,1);
-        JntTorqueCmd = zeros(JacoComm.NumJoints,1);
+        JntPosCmd = zeros(7,1);
+        JntVelCmd = zeros(7,1);
+        JntTorqueCmd = zeros(7,1);
         FingerPosCmd = zeros(JacoComm.NumFingers,1);
         CartPosCmd = zeros(JacoComm.CartParam,1);
         CartVelCmd = zeros(JacoComm.CartParam,1);

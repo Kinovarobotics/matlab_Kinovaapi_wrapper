@@ -22,6 +22,7 @@ int (*MyGetAngularCommand)(AngularPosition &);
 int(*MyGetAngularVelocity)(AngularPosition &Response);
 int(*MyGetAngularForce)(AngularPosition &Response);
 int(*MyGetCartesianPosition)(CartesianPosition &);
+int (*MyGetCartesianCommand)(CartesianPosition &);
 int (*MyGetCartesianForce)(CartesianPosition &);
 int (*MyMoveHome)();
 int(*MySetTorqueSafetyFactor)(float factor);
@@ -97,6 +98,7 @@ bool openKinovaLibrary()
     MyGetAngularVelocity = (int(*)(AngularPosition &)) GetProcAddress(commandLayer_handle, "GetAngularVelocity");
     MyGetAngularForce = (int(*)(AngularPosition &Response)) GetProcAddress(commandLayer_handle, "GetAngularForce");
   	MyGetCartesianPosition = (int(*)(CartesianPosition &)) GetProcAddress(commandLayer_handle, "GetCartesianPosition");
+    MyGetCartesianCommand = (int(*)(CartesianPosition &)) GetProcAddress(commandLayer_handle, "GetCartesianCommand");
     MyGetCartesianForce = (int (*)(CartesianPosition &)) GetProcAddress(commandLayer_handle,"GetCartesianForce");
     MyMoveHome = (int (*)()) GetProcAddress(commandLayer_handle,"MoveHome");
     

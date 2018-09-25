@@ -8,6 +8,8 @@
 %  <YOUR_JACOCOM_FILES_PATH>/JACO2Communicator/JACO2SDK
 %  If you want to run the class from other locations, 
 %  you will need to add this directory to your Windows path variable.
+addpath(genpath('C:\Users\shovington\Documents\GitHub\matlab_Kinovaapi_wrapper'))
+cd 'C:\Users\shovington\Documents\GitHub\matlab_Kinovaapi_wrapper\JACO2Communicator\JACO2SDK'
 
 
 %% Create an instance of the class (you can only create ONE instance)
