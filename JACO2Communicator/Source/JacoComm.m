@@ -8,15 +8,20 @@ classdef JacoComm < matlab.System & matlab.system.mixin.Propagates ...
     
     
     properties (Constant,Access = private)
-        NumJoints = 6;
         NumFingers = 3;
+        CartParam = 6;
     end
 
     properties (Access = private)
+        NumJoints = 6;
         JntPosCmd = zeros(JacoComm.NumJoints,1);
         JntVelCmd = zeros(JacoComm.NumJoints,1);
         JntTorqueCmd = zeros(JacoComm.NumJoints,1);
         FingerPosCmd = zeros(JacoComm.NumFingers,1);
+        CartPosCmd = zeros(JacoComm.CartParam,1);
+        CartVelCmd = zeros(JacoComm.CartParam,1);
+        OffsetCmd = zeros(4,1);
+        ZoneCmd = zeros(18,1);
         
         %GoToHomeCmdPast - Previous value of input 
         GoToHomeCmdPastValue = false;
@@ -65,6 +70,10 @@ classdef JacoComm < matlab.System & matlab.system.mixin.Propagates ...
        FingerTemp;
        EndEffectorPose;
        EndEffectorWrench;
+       DOF;
+       EndEffectorOffset;
+       ProtectionZone;
+       TrajectoryInfo;
     end
 
     methods
