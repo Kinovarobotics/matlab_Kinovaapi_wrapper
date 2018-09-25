@@ -87,8 +87,8 @@ classdef JacoComm < matlab.System & matlab.system.mixin.Propagates ...
         function connect(obj)
             stat = false; %#ok<NASGU>
             if coder.target('MATLAB')
-                [stat,~,~,~,~,~,~] = JacoMexInterface(double(MexFunctionIDs.OPEN_LIB),...
-                    obj.JntPosCmd,obj.JntVelCmd,obj.JntTorqueCmd,obj.FingerPosCmd);
+                [stat,~,~,~,~,~,~,~,~,~,~] = JacoMexInterface(double(MexFunctionIDs.OPEN_LIB),...
+                    obj.JntPosCmd,obj.JntVelCmd,obj.JntTorqueCmd,obj.FingerPosCmd,obj.CartPosCmd,obj.CartVelCmd,obj.OffsetCmd,obj.ZoneCmd);
             else
                 driverPath = 'C:\MATLAB\Demos\robotarm2\Source\Drivers\JACO2Communicator\JACO2SDK';
                 coder.updateBuildInfo('addSourcePaths',driverPath);
@@ -100,13 +100,14 @@ classdef JacoComm < matlab.System & matlab.system.mixin.Propagates ...
                 error('Failed to load library and open API');
             end
             obj.IsConnected = true;
+            obj = setNumJoints(obj);
         end
         
         function disconnect(obj)
             stat = false; %#ok<NASGU>
             if coder.target('MATLAB')
-                [stat,~,~,~,~,~,~]  = JacoMexInterface(double(MexFunctionIDs.CLOSE_LIB),...
-                    obj.JntPosCmd,obj.JntVelCmd,obj.JntTorqueCmd,obj.FingerPosCmd);
+                [stat,~,~,~,~,~,~,~,~,~,~]  = JacoMexInterface(double(MexFunctionIDs.CLOSE_LIB),...
+                    obj.JntPosCmd,obj.JntVelCmd,obj.JntTorqueCmd,obj.FingerPosCmd,obj.CartPosCmd,obj.CartVelCmd,obj.OffsetCmd,obj.ZoneCmd);
             else                
                 stat = coder.ceval('closeKinovaLibrary');
             end
@@ -116,6 +117,16 @@ classdef JacoComm < matlab.System & matlab.system.mixin.Propagates ...
             obj.IsConnected = false;
         end
         
+        function y = setNumJoints(obj)
+             value = getDOF(obj);
+            if (value == 4 || value == 6 || value == 7)
+                obj.NumJoints = value;
+            else
+                error('Numjoints must be 4, 6 or 7')
+            end
+            y = obj;
+        end
+                   
         function setPositionControlMode(obj)
             stat = false; %#ok<NASGU>
             if coder.target('MATLAB')
