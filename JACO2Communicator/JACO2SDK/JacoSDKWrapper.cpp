@@ -34,6 +34,21 @@ int(*MySetGravityType)(GRAVITY_TYPE Type);
 int (*MyInitFingers)();
 int(*MySendBasicTrajectory)(TrajectoryPoint command);
 int(*MySendAngularTorqueCommand)(float Command[COMMAND_SIZE]);
+int (*MyGetCodeVersion)(int Response[CODE_VERSION_COUNT]);
+int (*MyStartForceControl)();
+int (*MyStopForceControl)();
+int (*MyGetEndEffectorOffset)(unsigned int*, float*, float*, float*);
+int (*MySetEndEffectorOffset)(unsigned int status, float x, float y, float z);
+int (*MyGetProtectionZone)(ZoneList &Response);
+int (*MyEraseAllProtectionZones)();
+int (*MySetProtectionZone)(ZoneList Command);
+int (*MySetCartesianControl)();
+int (*MyGetGlobalTrajectoryInfo)(TrajectoryFIFO &Response);
+int (*MySendAdvanceTrajectory)(TrajectoryPoint command);
+int (*MySetPositionLimitDistance)(float Command[COMMAND_SIZE]);
+int (*MySetActuatorPID)(unsigned int address, float P, float I, float D);
+
+
 
 
 
