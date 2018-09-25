@@ -130,8 +130,8 @@ classdef JacoComm < matlab.System & matlab.system.mixin.Propagates ...
         function setPositionControlMode(obj)
             stat = false; %#ok<NASGU>
             if coder.target('MATLAB')
-                [stat,~,~,~,~,~,~] =  JacoMexInterface(double(MexFunctionIDs.SET_POS_CTRL),...
-                    obj.JntPosCmd,obj.JntVelCmd,obj.JntTorqueCmd,obj.FingerPosCmd);
+                [stat,~,~,~,~,~,~,~,~,~,~] =  JacoMexInterface(double(MexFunctionIDs.SET_POS_CTRL),...
+                    obj.JntPosCmd,obj.JntVelCmd,obj.JntTorqueCmd,obj.FingerPosCmd,obj.CartPosCmd,obj.CartVelCmd,obj.OffsetCmd,obj.ZoneCmd);
             else                
                 stat = coder.ceval('setPositionControlMode');
             end
@@ -145,8 +145,8 @@ classdef JacoComm < matlab.System & matlab.system.mixin.Propagates ...
             stat = false; %#ok<NASGU>
             % Velocity also uses position control mode
             if coder.target('MATLAB')
-                [stat,~,~,~,~,~,~] =  JacoMexInterface(double(MexFunctionIDs.SET_POS_CTRL),...
-                    obj.JntPosCmd,obj.JntVelCmd,obj.JntTorqueCmd,obj.FingerPosCmd);
+                [stat,~,~,~,~,~,~,~,~,~,~] =  JacoMexInterface(double(MexFunctionIDs.SET_POS_CTRL),...
+                    obj.JntPosCmd,obj.JntVelCmd,obj.JntTorqueCmd,obj.FingerPosCmd,obj.CartPosCmd,obj.CartVelCmd,obj.OffsetCmd,obj.ZoneCmd);
             else                
                 stat = coder.ceval('setPositionControlMode');
             end
@@ -159,8 +159,8 @@ classdef JacoComm < matlab.System & matlab.system.mixin.Propagates ...
         function setTorqueControlMode(obj)
             stat = false; %#ok<NASGU>
             if coder.target('MATLAB')
-                [stat,~,~,~,~,~,~] =  JacoMexInterface(double(MexFunctionIDs.SET_DIRECT_TORQUE_CTRL),...
-                    obj.JntPosCmd,obj.JntVelCmd,obj.JntTorqueCmd,obj.FingerPosCmd);
+                [stat,~,~,~,~,~,~,~,~,~,~] =  JacoMexInterface(double(MexFunctionIDs.SET_DIRECT_TORQUE_CTRL),...
+                    obj.JntPosCmd,obj.JntVelCmd,obj.JntTorqueCmd,obj.FingerPosCmd,obj.CartPosCmd,obj.CartVelCmd,obj.OffsetCmd,obj.ZoneCmd);
             else                
                 stat = coder.ceval('setTorqueControlMode');
             end
@@ -173,8 +173,8 @@ classdef JacoComm < matlab.System & matlab.system.mixin.Propagates ...
         function goToHomePosition(obj)
             stat = false; %#ok<NASGU>
             if coder.target('MATLAB')
-                [stat,~,~,~,~,~,~] =  JacoMexInterface(double(MexFunctionIDs.MOVE_TO_HOME),...
-                    obj.JntPosCmd,obj.JntVelCmd,obj.JntTorqueCmd,obj.FingerPosCmd);
+                [stat,~,~,~,~,~,~,~,~,~,~] =  JacoMexInterface(double(MexFunctionIDs.MOVE_TO_HOME),...
+                    obj.JntPosCmd,obj.JntVelCmd,obj.JntTorqueCmd,obj.FingerPosCmd,obj.CartPosCmd,obj.CartVelCmd,obj.OffsetCmd,obj.ZoneCmd);
             else                
                 stat = coder.ceval('moveToHomePosition');
             end
@@ -186,8 +186,8 @@ classdef JacoComm < matlab.System & matlab.system.mixin.Propagates ...
         function calibrateFingers(obj)
             stat = false; %#ok<NASGU>
             if coder.target('MATLAB')
-                [stat,~,~,~,~,~,~] =  JacoMexInterface(double(MexFunctionIDs.INIT_FINGERS),...
-                    obj.JntPosCmd,obj.JntVelCmd,obj.JntTorqueCmd,obj.FingerPosCmd);
+                [stat,~,~,~,~,~,~,~,~,~,~] =  JacoMexInterface(double(MexFunctionIDs.INIT_FINGERS),...
+                    obj.JntPosCmd,obj.JntVelCmd,obj.JntTorqueCmd,obj.FingerPosCmd,obj.CartPosCmd,obj.CartVelCmd,obj.OffsetCmd,obj.ZoneCmd);
             else                
                 stat = coder.ceval('initializeFingers');
             end
@@ -299,8 +299,8 @@ classdef JacoComm < matlab.System & matlab.system.mixin.Propagates ...
         function runGravityCalibration(obj)
             stat = false; %#ok<NASGU>
             if coder.target('MATLAB')
-                [stat,~,~,~,~,~,~] =  JacoMexInterface(double(MexFunctionIDs.RUN_GRAVITY_CALIB),...
-                    obj.JntPosCmd,obj.JntVelCmd,obj.JntTorqueCmd,obj.FingerPosCmd);
+                [stat,~,~,~,~,~,~,~,~,~,~] =  JacoMexInterface(double(MexFunctionIDs.RUN_GRAVITY_CALIB),...
+                    obj.JntPosCmd,obj.JntVelCmd,obj.JntTorqueCmd,obj.FingerPosCmd,obj.CartPosCmd,obj.CartVelCmd,obj.OffsetCmd,obj.ZoneCmd);
             else                
                 stat = coder.ceval('runGravityCalibration');
             end
@@ -435,8 +435,8 @@ classdef JacoComm < matlab.System & matlab.system.mixin.Propagates ...
             stat = false; %#ok<NASGU>
             pos = zeros(9,1);
             if coder.target('MATLAB')
-                [stat,pos,~,~,~,~,~] =  JacoMexInterface(double(MexFunctionIDs.GET_JNT_POS),...
-                    obj.JntPosCmd,obj.JntVelCmd,obj.JntTorqueCmd,obj.FingerPosCmd);
+                [stat,pos,~,~,~,~,~,~,~,~,~] =  JacoMexInterface(double(MexFunctionIDs.GET_JNT_POS),...
+                    obj.JntPosCmd,obj.JntVelCmd,obj.JntTorqueCmd,obj.FingerPosCmd,obj.CartPosCmd,obj.CartVelCmd,obj.OffsetCmd,obj.ZoneCmd);
             else                
                 stat = coder.ceval('getJointsPosition',coder.wref(pos));
             end
@@ -462,8 +462,8 @@ classdef JacoComm < matlab.System & matlab.system.mixin.Propagates ...
             stat = false; %#ok<NASGU>
             vel = zeros(obj.NumJoints+obj.NumFingers,1);
             if coder.target('MATLAB')
-                [stat,~,vel,~,~,~,~] =  JacoMexInterface(double(MexFunctionIDs.GET_JNT_VEL),...
-                    obj.JntPosCmd,obj.JntVelCmd,obj.JntTorqueCmd,obj.FingerPosCmd);
+                [stat,~,vel,~,~,~,~,~,~,~,~] =  JacoMexInterface(double(MexFunctionIDs.GET_JNT_VEL),...
+                    obj.JntPosCmd,obj.JntVelCmd,obj.JntTorqueCmd,obj.FingerPosCmd,obj.CartPosCmd,obj.CartVelCmd,obj.OffsetCmd,obj.ZoneCmd);
             else                
                 stat = coder.ceval('getJointsVelocity',coder.wref(vel));
             end
@@ -489,8 +489,8 @@ classdef JacoComm < matlab.System & matlab.system.mixin.Propagates ...
             stat = false; %#ok<NASGU>
             torque = zeros(obj.NumJoints+obj.NumFingers,1);
             if coder.target('MATLAB')
-                [stat,~,~,torque,~,~,~] =  JacoMexInterface(double(MexFunctionIDs.GET_JNT_TORQUE),...
-                    obj.JntPosCmd,obj.JntVelCmd,obj.JntTorqueCmd,obj.FingerPosCmd);
+                [stat,~,~,torque,~,~,~,~,~,~,~] =  JacoMexInterface(double(MexFunctionIDs.GET_JNT_TORQUE),...
+                    obj.JntPosCmd,obj.JntVelCmd,obj.JntTorqueCmd,obj.FingerPosCmd,obj.CartPosCmd,obj.CartVelCmd,obj.OffsetCmd,obj.ZoneCmd);
             else                
                 stat = coder.ceval('getJointsTorque',coder.wref(torque));
             end
@@ -517,8 +517,8 @@ classdef JacoComm < matlab.System & matlab.system.mixin.Propagates ...
             stat = false; %#ok<NASGU>
             temp = zeros(obj.NumJoints+obj.NumFingers,1);
             if coder.target('MATLAB')
-                [stat,~,~,~,temp,~,~] =  JacoMexInterface(double(MexFunctionIDs.GET_JNT_TEMP),...
-                    obj.JntPosCmd,obj.JntVelCmd,obj.JntTorqueCmd,obj.FingerPosCmd);
+                [stat,~,~,~,temp,~,~,~,~,~,~] =  JacoMexInterface(double(MexFunctionIDs.GET_JNT_TEMP),...
+                    obj.JntPosCmd,obj.JntVelCmd,obj.JntTorqueCmd,obj.FingerPosCmd,obj.CartPosCmd,obj.CartVelCmd,obj.OffsetCmd,obj.ZoneCmd);
             else                
                 stat = coder.ceval('getJointsTemperature',coder.wref(temp));
             end
@@ -544,8 +544,8 @@ classdef JacoComm < matlab.System & matlab.system.mixin.Propagates ...
             stat = false; %#ok<NASGU>
             pose = zeros(6,1);
             if coder.target('MATLAB')
-                [stat,~,~,~,~,pose,~] =  JacoMexInterface(double(MexFunctionIDs.GET_EE_POSE),...
-                    obj.JntPosCmd,obj.JntVelCmd,obj.JntTorqueCmd,obj.FingerPosCmd);
+                [stat,~,~,~,~,pose,~,~,~,~,~] =  JacoMexInterface(double(MexFunctionIDs.GET_EE_POSE),...
+                    obj.JntPosCmd,obj.JntVelCmd,obj.JntTorqueCmd,obj.FingerPosCmd,obj.CartPosCmd,obj.CartVelCmd,obj.OffsetCmd,obj.ZoneCmd);
             else                
                 stat = coder.ceval('getEndEffectorPose',coder.wref(pose));
             end
@@ -559,8 +559,8 @@ classdef JacoComm < matlab.System & matlab.system.mixin.Propagates ...
             stat = false; %#ok<NASGU>
             wrench = zeros(6,1);
             if coder.target('MATLAB')
-                [stat,~,~,~,~,~,wrench] =  JacoMexInterface(double(MexFunctionIDs.GET_EE_WRENCH),...
-                    obj.JntPosCmd,obj.JntVelCmd,obj.JntTorqueCmd,obj.FingerPosCmd);
+                [stat,~,~,~,~,~,wrench,~,~,~,~] =  JacoMexInterface(double(MexFunctionIDs.GET_EE_WRENCH),...
+                    obj.JntPosCmd,obj.JntVelCmd,obj.JntTorqueCmd,obj.FingerPosCmd,obj.CartPosCmd,obj.CartVelCmd,obj.OffsetCmd,obj.ZoneCmd);
             else                
                 stat = coder.ceval('getEndEffectorWrench',coder.wref(wrench));
             end
@@ -575,8 +575,8 @@ classdef JacoComm < matlab.System & matlab.system.mixin.Propagates ...
             stat = false; %#ok<NASGU>
             obj.JntPosCmd = cmd;
             if coder.target('MATLAB')
-                [stat,~,~,~,~,~,~] =  JacoMexInterface(double(MexFunctionIDs.SEND_JNT_POS),...
-                    obj.JntPosCmd,obj.JntVelCmd,obj.JntTorqueCmd,obj.FingerPosCmd);
+                [stat,~,~,~,~,~,~,~,~,~,~] =  JacoMexInterface(double(MexFunctionIDs.SEND_JNT_POS),...
+                    obj.JntPosCmd,obj.JntVelCmd,obj.JntTorqueCmd,obj.FingerPosCmd,obj.CartPosCmd,obj.CartVelCmd,obj.OffsetCmd,obj.ZoneCmd);
             else                
                 stat = coder.ceval('sendJointPositions',coder.wref(obj.JntPosCmd));
             end
@@ -590,8 +590,8 @@ classdef JacoComm < matlab.System & matlab.system.mixin.Propagates ...
             stat = false; %#ok<NASGU>
             obj.FingerPosCmd = cmd;
             if coder.target('MATLAB')
-                [stat,~,~,~,~,~,~] =  JacoMexInterface(double(MexFunctionIDs.SEND_FINGER_POS),...
-                    obj.JntPosCmd,obj.JntVelCmd,obj.JntTorqueCmd,obj.FingerPosCmd);
+                [stat,~,~,~,~,~,~,~,~,~,~] =  JacoMexInterface(double(MexFunctionIDs.SEND_FINGER_POS),...
+                    obj.JntPosCmd,obj.JntVelCmd,obj.JntTorqueCmd,obj.FingerPosCmd,obj.CartPosCmd,obj.CartVelCmd,obj.OffsetCmd,obj.ZoneCmd);
             else                
                 stat = coder.ceval('sendFingerPositions',coder.wref(obj.FingerPosCmd));
             end
@@ -606,8 +606,8 @@ classdef JacoComm < matlab.System & matlab.system.mixin.Propagates ...
             obj.JntPosCmd = jntCmd;
             obj.FingerPosCmd = fCmd;
             if coder.target('MATLAB')
-                [stat,~,~,~,~,~,~] =  JacoMexInterface(double(MexFunctionIDs.SEND_JNT_FING_POS),...
-                    obj.JntPosCmd,obj.JntVelCmd,obj.JntTorqueCmd,obj.FingerPosCmd);
+                [stat,~,~,~,~,~,~,~,~,~,~] =  JacoMexInterface(double(MexFunctionIDs.SEND_JNT_FING_POS),...
+                    obj.JntPosCmd,obj.JntVelCmd,obj.JntTorqueCmd,obj.FingerPosCmd,obj.CartPosCmd,obj.CartVelCmd,obj.OffsetCmd,obj.ZoneCmd);
             else                
                 stat = coder.ceval('sendJointAndFingerPositions',...
                     coder.wref(obj.JntPosCmd),coder.wref(obj.FingerPosCmd));
@@ -622,8 +622,8 @@ classdef JacoComm < matlab.System & matlab.system.mixin.Propagates ...
             stat = false; %#ok<NASGU>
             obj.JntVelCmd = cmd;
             if coder.target('MATLAB')
-                [stat,~,~,~,~,~,~] =  JacoMexInterface(double(MexFunctionIDs.SEND_JNT_VEL),...
-                    obj.JntPosCmd,obj.JntVelCmd,obj.JntTorqueCmd,obj.FingerPosCmd);
+                [stat,~,~,~,~,~,~,~,~,~,~] =  JacoMexInterface(double(MexFunctionIDs.SEND_JNT_VEL),...
+                    obj.JntPosCmd,obj.JntVelCmd,obj.JntTorqueCmd,obj.FingerPosCmd,obj.CartPosCmd,obj.CartVelCmd,obj.OffsetCmd,obj.ZoneCmd);
             else                
                 stat = coder.ceval('sendJointVelocities',coder.wref(obj.JntVelCmd));
             end
@@ -637,8 +637,8 @@ classdef JacoComm < matlab.System & matlab.system.mixin.Propagates ...
             stat = false; %#ok<NASGU>
             obj.JntTorqueCmd = cmd;
             if coder.target('MATLAB')
-                [stat,~,~,~,~,~,~] =  JacoMexInterface(double(MexFunctionIDs.SEND_JNT_TORQUE),...
-                    obj.JntPosCmd,obj.JntVelCmd,obj.JntTorqueCmd,obj.FingerPosCmd);
+                [stat,~,~,~,~,~,~,~,~,~,~] =  JacoMexInterface(double(MexFunctionIDs.SEND_JNT_TORQUE),...
+                    obj.JntPosCmd,obj.JntVelCmd,obj.JntTorqueCmd,obj.FingerPosCmd,obj.CartPosCmd,obj.CartVelCmd,obj.OffsetCmd,obj.ZoneCmd);
             else                
                 stat = coder.ceval('sendJointTorques',coder.wref(obj.JntTorqueCmd));
             end
