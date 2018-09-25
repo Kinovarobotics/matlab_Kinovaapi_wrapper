@@ -223,10 +223,11 @@ bool getJointsPosition(double *pos)
             pos[3] =  kDeg2rad * dataPosition.Actuators.Actuator4;
             pos[4] =  kDeg2rad * dataPosition.Actuators.Actuator5;
             pos[5] =  kDeg2rad * dataPosition.Actuators.Actuator6;
+			pos[6] =  kDeg2rad * dataPosition.Actuators.Actuator7;
             
-            pos[6] = dataPosition.Fingers.Finger1;
-            pos[7] = dataPosition.Fingers.Finger2;
-            pos[8] = dataPosition.Fingers.Finger3;         
+            pos[7] = dataPosition.Fingers.Finger1;
+            pos[8] = dataPosition.Fingers.Finger2;
+            pos[9] = dataPosition.Fingers.Finger3;         
         }
         return true;
     }
@@ -253,10 +254,11 @@ bool getJointsVelocity(double *vel)
             vel[3] = kDeg2rad * angularVelocity.Actuators.Actuator4;
             vel[4] = kDeg2rad * angularVelocity.Actuators.Actuator5;
             vel[5] = kDeg2rad * angularVelocity.Actuators.Actuator6;
+			vel[6] = kDeg2rad * angularVelocity.Actuators.Actuator7;
             
-            vel[6] = angularVelocity.Fingers.Finger1;
-            vel[7] = angularVelocity.Fingers.Finger2;
-            vel[8] = angularVelocity.Fingers.Finger3;
+            vel[7] = angularVelocity.Fingers.Finger1;
+            vel[8] = angularVelocity.Fingers.Finger2;
+            vel[9] = angularVelocity.Fingers.Finger3;
         }
         return true;
     }
@@ -283,10 +285,11 @@ bool getJointsTorque(double *torque)
             torque[3] = angularForce.Actuators.Actuator4;
             torque[4] = angularForce.Actuators.Actuator5;
             torque[5] = angularForce.Actuators.Actuator6;
+			torque[6] = angularForce.Actuators.Actuator7;
             
-            torque[6] = angularForce.Fingers.Finger1;
-            torque[7] = angularForce.Fingers.Finger2;
-            torque[8] = angularForce.Fingers.Finger3;
+            torque[7] = angularForce.Fingers.Finger1;
+            torque[8] = angularForce.Fingers.Finger2;
+            torque[9] = angularForce.Fingers.Finger3;
         }
         return true;
     }
@@ -314,10 +317,11 @@ bool getJointsTemperature(double *temp)
             temp[3] = data.ActuatorsTemperatures[3];
             temp[4] = data.ActuatorsTemperatures[4];
             temp[5] = data.ActuatorsTemperatures[5];
+			temp[6] = data.ActuatorsTemperatures[6];
             
-            temp[6] = data.FingersTemperatures[0];
-            temp[7] = data.FingersTemperatures[1];
-            temp[8] = data.FingersTemperatures[2];
+            temp[7] = data.FingersTemperatures[0];
+            temp[8] = data.FingersTemperatures[1];
+            temp[9] = data.FingersTemperatures[2];
         }
         return true;
     }
