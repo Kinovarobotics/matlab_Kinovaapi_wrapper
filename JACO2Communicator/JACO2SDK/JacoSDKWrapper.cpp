@@ -110,7 +110,20 @@ bool openKinovaLibrary()
     MyInitFingers = (int (*)()) GetProcAddress(commandLayer_handle,"InitFingers");
   	MySendBasicTrajectory = (int(*)(TrajectoryPoint)) GetProcAddress(commandLayer_handle, "SendBasicTrajectory");
   	MySendAngularTorqueCommand = (int(*)(float Command[COMMAND_SIZE])) GetProcAddress(commandLayer_handle, "SendAngularTorqueCommand");
-
+	MyGetCodeVersion = (int(*) (int Response[CODE_VERSION_COUNT])) GetProcAddress(commandLayer_handle, "GetCodeVersion"); 
+    MyStartForceControl = (int(*)()) GetProcAddress(commandLayer_handle, "StartForceControl");
+    MyStopForceControl = (int(*)()) GetProcAddress(commandLayer_handle, "StopForceControl");
+    MyGetEndEffectorOffset = (int(*)(unsigned int*, float*, float*, float*)) GetProcAddress(commandLayer_handle, "GetEndEffectorOffset");
+    MySetEndEffectorOffset = (int(*)(unsigned int, float, float, float)) GetProcAddress(commandLayer_handle, "SetEndEffectorOffset");
+    MyGetProtectionZone = (int(*)(ZoneList &)) GetProcAddress(commandLayer_handle, "GetProtectionZone");
+    MyEraseAllProtectionZones = (int(*)()) GetProcAddress(commandLayer_handle, "EraseAllProtectionZones");
+    MySetProtectionZone = (int(*)(ZoneList)) GetProcAddress(commandLayer_handle, "SetProtectionZone");
+    MySetCartesianControl = (int(*)()) GetProcAddress(commandLayer_handle, "SetCartesianControl");
+    MyGetGlobalTrajectoryInfo = (int(*)(TrajectoryFIFO &Response)) GetProcAddress(commandLayer_handle, "GetGlobalTrajectoryInfo");
+    MySendAdvanceTrajectory = (int(*)(TrajectoryPoint)) GetProcAddress(commandLayer_handle, "SendAdvanceTrajectory");
+    MySetPositionLimitDistance = (int(*)(float Command[COMMAND_SIZE])) GetProcAddress(commandLayer_handle, "SetPositionLimitDistance");
+    MySetActuatorPID = (int(*)(unsigned int, float, float, float)) GetProcAddress(commandLayer_handle, "SetActuatorPID");
+    MyGetGlobalTrajectoryInfo = (int(*)(TrajectoryFIFO &Response)) GetProcAddress(commandLayer_handle, "GetGlobalTrajectoryInfo");
 
 
 
