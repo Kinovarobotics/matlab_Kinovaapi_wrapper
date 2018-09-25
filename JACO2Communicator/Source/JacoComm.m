@@ -295,6 +295,46 @@ classdef JacoComm < matlab.System & matlab.system.mixin.Propagates ...
                 error('Control mode not set in torque mode');
             end
         end
+         
+        function sendCartesianPositionCommand(obj,Cmd)
+            % Validate inputs
+            validateattributes(Cmd, {'numeric'},...
+                {'real', 'nonnan','nonempty','finite', 'column',...
+                'nrows',obj.CartParam},'sendCartesianPositionCommand');
+            
+            % Call private function 
+            obj.sendCartesianPositionCommandInternal(Cmd);              
+        end
+        
+        function sendCartesianVelocityCommand(obj,Cmd)
+            % Validate inputs
+            validateattributes(Cmd, {'numeric'},...
+                {'real', 'nonnan','nonempty','finite', 'column',...
+                'nrows',obj.CartParam},'sendCartesianVelocityCommand');
+            
+            % Call private function 
+            obj.sendCartesianVelocityCommandInternal(Cmd);              
+        end
+        
+        function setEndEffectorOffset(obj,Cmd)
+            % Validate inputs
+            validateattributes(Cmd, {'numeric'},...
+                {'real', 'nonnan','nonempty','finite', 'column',...
+                'nrows',4},'setEndEffectorOffset');
+            
+            % Call private function 
+            obj.setEndEffectorOffsetInternal(Cmd);              
+        end
+        
+        function setProtectionZone(obj,Cmd)
+            % Validate inputs
+            validateattributes(Cmd, {'numeric'},...
+                {'real', 'nonnan','nonempty','finite', 'column',...
+                'nrows',18},'setProtectionZone');
+            
+            % Call private function 
+            obj.setProtectionZoneInternal(Cmd);              
+        end
         
         function runGravityCalibration(obj)
             stat = false; %#ok<NASGU>
@@ -645,7 +685,65 @@ classdef JacoComm < matlab.System & matlab.system.mixin.Propagates ...
             if ~stat
                 error('Failed to send joint velocity command');
             end               
-        end      
+        end
+            
+        function sendCartesianPositionCommandInternal(obj,cmd)
+            % no input validation 
+            stat = false; %#ok<NASGU>
+            obj.CartPosCmd = cmd;
+            if coder.target('MATLAB')
+                [stat,~,~,~,~,~,~,~,~,~,~] =  JacoMexInterface(double(MexFunctionIDs.SEND_CART_POS),...
+                    obj.JntPosCmd,obj.JntVelCmd,obj.JntTorqueCmd,obj.FingerPosCmd, obj.CartPosCmd,obj.CartVelCmd,obj.OffsetCmd,obj.ZoneCmd);
+            else                
+                stat = coder.ceval('SendCartesianPositions',coder.wref(obj.CartPosCmd));
+            end
+            if ~stat
+                error('Failed to send cartesian position command');
+            end               
+        end  
+        
+        function sendCartesianVelocityCommandInternal(obj,cmd)
+            % no input validation 
+            stat = false; %#ok<NASGU>
+            obj.CartVelCmd = cmd;
+            if coder.target('MATLAB')
+                [stat,~,~,~,~,~,~,~,~,~,~] =  JacoMexInterface(double(MexFunctionIDs.SEND_CART_VEL),...
+                    obj.JntPosCmd,obj.JntVelCmd,obj.JntTorqueCmd,obj.FingerPosCmd,obj.CartPosCmd,obj.CartVelCmd,obj.OffsetCmd,obj.ZoneCmd);
+            else                
+                stat = coder.ceval('SendCartesianVelocity',coder.wref(obj.CartVelCmd));
+            end
+            if ~stat
+                error('Failed to send cartesian velocity command');
+            end               
+        end  
+             
+        function setEndEffectorOffsetInternal(obj,Cmd)
+            stat = false; %#ok<NASGU>
+            obj.OffsetCmd = Cmd;
+            if coder.target('MATLAB')
+                [stat,~,~,~,~,~,~,~,~,~,~] =  JacoMexInterface(double(MexFunctionIDs.SET_EE_OFFSET),...
+                    obj.JntPosCmd,obj.JntVelCmd,obj.JntTorqueCmd,obj.FingerPosCmd,obj.CartPosCmd,obj.CartVelCmd,obj.OffsetCmd,obj.ZoneCmd);
+            else                
+                stat = coder.ceval('setEndEffectorOffset');
+            end
+            if ~stat
+                error('Failed to set end effector offset');
+            end
+        end
+        
+        function setProtectionZoneInternal(obj,Cmd)
+            stat = false; %#ok<NASGU>
+            obj.ZoneCmd = Cmd;
+            if coder.target('MATLAB')
+                [stat,~,~,~,~,~,~,~,~,~,~] =  JacoMexInterface(double(MexFunctionIDs.SET_PROTECT_ZONE),...
+                    obj.JntPosCmd,obj.JntVelCmd,obj.JntTorqueCmd,obj.FingerPosCmd,obj.CartPosCmd,obj.CartVelCmd,obj.OffsetCmd,obj.ZoneCmd);
+            else                
+                stat = coder.ceval('setProtectionZone');
+            end
+            if ~stat
+                error('Failed to set protection zone');
+            end
+        end
                
     end
     
