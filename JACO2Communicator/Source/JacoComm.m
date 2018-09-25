@@ -495,6 +495,46 @@ classdef JacoComm < matlab.System & matlab.system.mixin.Propagates ...
             end
         end
         
+        function StartForceControl(obj)
+            stat = false; %#ok<NASGU>
+            if coder.target('MATLAB')
+                [stat,~,~,~,~,~,~,~,~,~,~] =  JacoMexInterface(double(MexFunctionIDs.START_FORCE_CONTROL),...
+                    obj.JntPosCmd,obj.JntVelCmd,obj.JntTorqueCmd,obj.FingerPosCmd,obj.CartPosCmd,obj.CartVelCmd,obj.OffsetCmd,obj.ZoneCmd);
+            else                
+                stat = coder.ceval('startForceControl');
+            end
+            if ~stat
+                error('Failed to start force control');
+            end
+        end
+        
+        function StopForceControl(obj)
+            stat = false; %#ok<NASGU>
+            if coder.target('MATLAB')
+                [stat,~,~,~,~,~,~,~,~,~,~] =  JacoMexInterface(double(MexFunctionIDs.STOP_FORCE_CONTROL),...
+                    obj.JntPosCmd,obj.JntVelCmd,obj.JntTorqueCmd,obj.FingerPosCmd,obj.CartPosCmd,obj.CartVelCmd,obj.OffsetCmd,obj.ZoneCmd);
+            else                
+                stat = coder.ceval('stopForceControl');
+            end
+            if ~stat
+                error('Failed to stop force control');
+            end
+        end
+        
+        function EraseAllProtectionZones(obj)
+            stat = false; %#ok<NASGU>
+            if coder.target('MATLAB')
+                [stat,~,~,~,~,~,~,~,~,~,~] =  JacoMexInterface(double(MexFunctionIDs.ERR_PROTECT_ZONES),...
+                    obj.JntPosCmd,obj.JntVelCmd,obj.JntTorqueCmd,obj.FingerPosCmd,obj.CartPosCmd,obj.CartVelCmd,obj.OffsetCmd,obj.ZoneCmd);
+            else                
+                stat = coder.ceval('eraseAllProtectionZones');
+            end
+            if ~stat
+                error('Failed to erase protection zones');
+            end
+        end
+        
+        
 %         function delete(obj)
 %             disp('Calling destructor method'); 
 %             obj.disconnect();            
