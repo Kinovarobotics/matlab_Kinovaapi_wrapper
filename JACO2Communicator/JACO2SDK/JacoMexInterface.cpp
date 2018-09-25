@@ -73,17 +73,17 @@ void mexFunction( int nlhs, mxArray *plhs[],
     }
     
     /* Second Input: jntPos: Check that number of rows and cols */
-    if(mxGetM(prhs[1]) != NUM_JOINTS || mxGetN(prhs[1]) != 1) {
+    if((mxGetM(prhs[1]) != NUM_JOINTS && mxGetM(prhs[1]) != NUM_JOINTS-1 && mxGetM(prhs[1]) != NUM_JOINTS-3) || mxGetN(prhs[1]) != 1) {
         mexErrMsgIdAndTxt("MyToolbox:notColVector",
                       "Joint Pos Input must be a Col vector of num joint elements.");
     }
     /* Third Input: jntVel: Check that number of rows and cols */
-    if(mxGetM(prhs[2]) != NUM_JOINTS || mxGetN(prhs[2]) != 1) {
+    if((mxGetM(prhs[2]) != NUM_JOINTS && mxGetM(prhs[2]) != NUM_JOINTS-1 && mxGetM(prhs[2]) != NUM_JOINTS-3) || mxGetN(prhs[2]) != 1) {
         mexErrMsgIdAndTxt("MyToolbox:notColVector",
                       "Joint Vel Input must be a Col vector of num joint elements.");
     }
     /* Fourth Input: jntTorque: Check that number of rows and cols */
-    if(mxGetM(prhs[3]) != NUM_JOINTS || mxGetN(prhs[3]) != 1) {
+    if((mxGetM(prhs[3]) != NUM_JOINTS && mxGetM(prhs[3]) != NUM_JOINTS-1 && mxGetM(prhs[3]) != NUM_JOINTS-3) || mxGetN(prhs[3]) != 1) {
         mexErrMsgIdAndTxt("MyToolbox:notColVector",
                       "Joint Torque Input must be a Col vector of num joint elements.");
     }
