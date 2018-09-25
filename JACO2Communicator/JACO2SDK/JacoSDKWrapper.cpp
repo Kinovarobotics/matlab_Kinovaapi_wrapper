@@ -694,3 +694,290 @@ bool sendFingerPositions(double *pos)
         return false;
     } 
 }
+
+bool sendCartesianPositions(double *pos)
+{
+    TrajectoryPoint pointToSend;
+    CartesianPosition data;
+    
+    if (MyInitAPI != NULL && commandLayer_handle != NULL && MySendAdvanceTrajectory != NULL)
+    {
+        pointToSend.Position.Type = CARTESIAN_POSITION;
+        MyGetCartesianCommand(data);
+       // Set cartesian position     
+        pointToSend.Position.CartesianPosition.X = data.Coordinates.X + pos[0];
+    	pointToSend.Position.CartesianPosition.Y = data.Coordinates.Y + pos[1];
+		pointToSend.Position.CartesianPosition.Z = data.Coordinates.Z + pos[2];
+		pointToSend.Position.CartesianPosition.ThetaX = data.Coordinates.ThetaX + pos[3];
+		pointToSend.Position.CartesianPosition.ThetaY = data.Coordinates.ThetaY + pos[4];
+		pointToSend.Position.CartesianPosition.ThetaZ = data.Coordinates.ThetaZ + pos[5];
+       
+            
+       MySendAdvanceTrajectory(pointToSend);
+       return true;
+    }
+    else
+    {
+        mexPrintf("Library or API not open\n");
+        return false;
+    } 
+}
+
+bool sendCartesianVelocity(double *vel)
+{
+    TrajectoryPoint pointToSend;
+    
+    if (MyInitAPI != NULL && commandLayer_handle != NULL && MySendAdvanceTrajectory != NULL)
+    {
+       pointToSend.Position.Type = CARTESIAN_VELOCITY;
+       pointToSend.Position.HandMode = HAND_NOMOVEMENT;
+       // Set cartesian velocity Cmd
+       pointToSend.Position.CartesianPosition.X = vel[0];
+       pointToSend.Position.CartesianPosition.Y = vel[1];
+       pointToSend.Position.CartesianPosition.Z = vel[2];
+       pointToSend.Position.CartesianPosition.ThetaX = kRad2deg * vel[3];
+       pointToSend.Position.CartesianPosition.ThetaY = kRad2deg * vel[4];
+       pointToSend.Position.CartesianPosition.ThetaZ = kRad2deg * vel[5];
+       MySendAdvanceTrajectory(pointToSend);
+       return true;
+    }
+    else
+    {
+        mexPrintf("Library or API not open\n");
+        return false;
+    } 
+}
+
+bool GetDOF (double *DOF)
+{
+    AngularPosition angularForce;
+    
+    if (MyInitAPI != NULL && commandLayer_handle != NULL && MyGetAngularForce != NULL)
+    {
+        for (int i = 0; i < devicesCount; i++)
+        {
+            MySetActiveDevice(list[i]);
+            MyGetAngularForce(angularForce); 
+            // Verify if it's a 4 DOF
+            if (abs(angularForce.Actuators.Actuator7) < JACO_SDK_WRAPPER_TINY_NUMBER && 
+                    abs(angularForce.Actuators.Actuator6) < JACO_SDK_WRAPPER_TINY_NUMBER &&
+                    abs(angularForce.Actuators.Actuator5) < JACO_SDK_WRAPPER_TINY_NUMBER && 
+                    abs(angularForce.Actuators.Actuator4) > JACO_SDK_WRAPPER_TINY_NUMBER &&
+                    abs(angularForce.Actuators.Actuator3) > JACO_SDK_WRAPPER_TINY_NUMBER && 
+                    abs(angularForce.Actuators.Actuator2) > JACO_SDK_WRAPPER_TINY_NUMBER &&
+                    abs(angularForce.Actuators.Actuator1) > JACO_SDK_WRAPPER_TINY_NUMBER)
+            {
+              *DOF = 4.0;
+            } 
+            // Verify if it's a 6 DOF
+            else if (abs(angularForce.Actuators.Actuator7) < JACO_SDK_WRAPPER_TINY_NUMBER && 
+                    abs(angularForce.Actuators.Actuator6) > JACO_SDK_WRAPPER_TINY_NUMBER &&
+                    abs(angularForce.Actuators.Actuator5) > JACO_SDK_WRAPPER_TINY_NUMBER && 
+                    abs(angularForce.Actuators.Actuator4) > JACO_SDK_WRAPPER_TINY_NUMBER &&
+                    abs(angularForce.Actuators.Actuator3) > JACO_SDK_WRAPPER_TINY_NUMBER && 
+                    abs(angularForce.Actuators.Actuator2) > JACO_SDK_WRAPPER_TINY_NUMBER &&
+                    abs(angularForce.Actuators.Actuator1) > JACO_SDK_WRAPPER_TINY_NUMBER) 
+            {
+              *DOF = 6.0; 
+            }
+            // Verify if it's a 7 DOF
+            else if (abs(angularForce.Actuators.Actuator7) > JACO_SDK_WRAPPER_TINY_NUMBER && 
+                    abs(angularForce.Actuators.Actuator6) > JACO_SDK_WRAPPER_TINY_NUMBER &&
+                    abs(angularForce.Actuators.Actuator5) > JACO_SDK_WRAPPER_TINY_NUMBER && 
+                    abs(angularForce.Actuators.Actuator4) > JACO_SDK_WRAPPER_TINY_NUMBER &&
+                    abs(angularForce.Actuators.Actuator3) > JACO_SDK_WRAPPER_TINY_NUMBER && 
+                    abs(angularForce.Actuators.Actuator2) > JACO_SDK_WRAPPER_TINY_NUMBER &&
+                    abs(angularForce.Actuators.Actuator1) > JACO_SDK_WRAPPER_TINY_NUMBER)
+            {
+             *DOF = 7.0;   
+            }
+            else
+            {
+                mexPrintf("Can't get the number of DOF, please proceed to torque calibration\n");
+                *DOF = 0;
+                return false;
+            }
+        }
+    return true;
+    }
+    else
+    {
+        mexPrintf("Library or API not open\n");
+        *DOF = 0;
+        return false;
+    }        
+}
+
+bool startForceControl()
+{
+     if (MyInitAPI != NULL && commandLayer_handle != NULL && MyStartForceControl != NULL)
+     {
+        MyStartForceControl();  
+        return true;
+     }
+     
+    else
+    {
+        mexPrintf("Library or API not open\n");
+        return false;
+    }
+
+}
+
+
+bool stopForceControl()
+{
+    if (MyInitAPI != NULL && commandLayer_handle != NULL && MyStopForceControl != NULL)
+    {
+        MyStopForceControl();  
+        return true;
+    }
+    
+    else
+    {
+        mexPrintf("Librairy or API not open\n");
+        return false;
+    }
+}
+
+bool getEndEffectorOffset(double *offset)
+{   
+    unsigned int status;
+    float x,y,z;
+    if (MyInitAPI != NULL && commandLayer_handle != NULL && MyGetEndEffectorOffset != NULL)
+    {   
+        // Get end effector offset
+        MyGetEndEffectorOffset(&status, &x, &y, &z);
+        offset[0] = status;
+        offset[1] = x;
+        offset[2] = y;
+        offset[3] = z;
+        return true;
+    }
+    
+    else
+    {
+        mexPrintf("Librairy or API not open\n");
+        return false;
+    }
+}
+
+bool setEndEffectorOffset(double *offset)
+{
+    unsigned int status;
+    float x;
+    float y;
+    float z;
+    if (MyInitAPI != NULL && commandLayer_handle != NULL && MySetEndEffectorOffset != NULL)
+    {   
+        // Set end effector offset
+        status = offset[0];
+        x = offset[1];
+        y = offset[2];
+        z = offset[3];
+        MySetEndEffectorOffset(status, x, y, z);
+        return true;
+    }
+    
+    else
+    {
+        mexPrintf("Librairy or API not open\n");
+        return false;
+    }
+}
+
+bool getProtectionZone(double *zone)
+{
+    int result;
+    if (MyInitAPI != NULL && commandLayer_handle != NULL && MyGetProtectionZone != NULL)
+    {
+        ZoneList zoneList;
+        MyGetProtectionZone(zoneList);
+        zone[0] = zoneList.NbZones;
+        return true;
+    }
+    
+    else
+    {
+        mexPrintf("Librairy or API not open\n");
+        return false;
+    }
+}
+
+bool eraseAllProtectionZones()
+{
+    if (MyInitAPI != NULL && commandLayer_handle != NULL && MyEraseAllProtectionZones != NULL)
+    {
+        MyEraseAllProtectionZones();
+        return true;
+    }
+    
+    else
+    {
+        mexPrintf("Librairy or API not open\n");
+        
+        return false;
+    }
+}
+
+bool setProtectionZone(double *zone)
+{int result;
+    if (MyInitAPI != NULL && commandLayer_handle != NULL && MySetProtectionZone != NULL)
+    {   
+        ZoneList zones;
+        ZoneList zoneList;
+        MyGetProtectionZone(zoneList);
+       
+        zones.NbZones = zoneList.NbZones + 1;
+        mexPrintf("%d",zones.NbZones);
+        zones.Zones[zones.NbZones].zoneShape.shapeType = PrismSquareBase_Z;
+        zones.Zones[zones.NbZones].zoneShape.Points[0].X = zone[0];
+        zones.Zones[zones.NbZones].zoneShape.Points[0].Y = zone[1];
+        zones.Zones[zones.NbZones].zoneShape.Points[0].Z = zone[2];
+        zones.Zones[zones.NbZones].zoneShape.Points[0].ThetaX = zone[3];
+        zones.Zones[zones.NbZones].zoneShape.Points[0].ThetaY = zone[4];
+        zones.Zones[zones.NbZones].zoneShape.Points[0].ThetaZ = zone[5];
+        zones.Zones[zones.NbZones].zoneShape.Points[1].X = zone[6];
+        zones.Zones[zones.NbZones].zoneShape.Points[1].Y = zone[7];
+        zones.Zones[zones.NbZones].zoneShape.Points[1].Z = zone[8];
+        zones.Zones[zones.NbZones].zoneShape.Points[2].X = zone[9];
+        zones.Zones[zones.NbZones].zoneShape.Points[2].Y = zone[10];
+        zones.Zones[zones.NbZones].zoneShape.Points[2].Z = zone[11];
+        zones.Zones[zones.NbZones].zoneShape.Points[3].X = zone[12];
+        zones.Zones[zones.NbZones].zoneShape.Points[3].Y = zone[13];
+        zones.Zones[zones.NbZones].zoneShape.Points[3].Z = zone[14];
+        zones.Zones[zones.NbZones].zoneShape.Points[4].Z = zone[15];
+        zones.Zones[zones.NbZones].zoneLimitation.speedParameter1 = zone[16];
+        zones.Zones[zones.NbZones].zoneLimitation.speedParameter2 = zone[17];
+
+        MySetProtectionZone(zones);
+        return true;
+    }
+    
+    else
+    {
+        mexPrintf("Librairy or API not open\n");
+        return false;
+    }
+}
+
+bool getGlobalTrajectoryInfo(double *info)
+{
+    TrajectoryFIFO FIFO;
+    if (MyInitAPI != NULL && commandLayer_handle != NULL && MyGetGlobalTrajectoryInfo != NULL)
+    {
+        MyGetGlobalTrajectoryInfo(FIFO);
+        info[0] = FIFO.TrajectoryCount;
+        info[1] = FIFO.UsedPercentage;
+        info[2] = FIFO.MaxSize;
+        mexPrintf("FIFO.TrajectoryCount : %d FIFO.UsedPercentage : %lf FIFO.MaxSize : %d\n",FIFO.TrajectoryCount,FIFO.UsedPercentage,FIFO.MaxSize);
+        return true;
+    }
+    
+    else
+    {
+        mexPrintf("Librairy or API not open\n");
+        
+        return false;
+    }
+}
