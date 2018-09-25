@@ -516,6 +516,7 @@ bool sendJointPositions(double *pos)
         pointToSend.Position.Actuators.Actuator4 = kRad2deg * pos[3];
         pointToSend.Position.Actuators.Actuator5 = kRad2deg * pos[4];
         pointToSend.Position.Actuators.Actuator6 = kRad2deg * pos[5];
+        pointToSend.Position.Actuators.Actuator7 = kRad2deg * pos[6];
         
         // This is required otherwise it only works for the first time 
         // you send the command unless you move the joystick. 
@@ -575,6 +576,7 @@ bool sendJointAndFingerPositions(double *jpos, double *fpos)
         pointToSend.Position.Actuators.Actuator4 = kRad2deg * jpos[3];
         pointToSend.Position.Actuators.Actuator5 = kRad2deg * jpos[4];
         pointToSend.Position.Actuators.Actuator6 = kRad2deg * jpos[5];
+        pointToSend.Position.Actuators.Actuator7 = kRad2deg * jpos[6];
         
 
         
@@ -604,6 +606,7 @@ bool sendJointVelocities(double *vel)
         pointToSend.Position.Actuators.Actuator4 = kRad2deg * vel[3];
         pointToSend.Position.Actuators.Actuator5 = kRad2deg * vel[4];
         pointToSend.Position.Actuators.Actuator6 = kRad2deg * vel[5];
+        pointToSend.Position.Actuators.Actuator7 = kRad2deg * vel[6];
         
         MySendBasicTrajectory(pointToSend);
 
@@ -636,6 +639,7 @@ bool sendJointTorques(double *torque)
         TorqueCommand[3] = torque[3];
         TorqueCommand[4] = torque[4];
         TorqueCommand[5] = torque[5];
+        TorqueCommand[6] = torque[6];
         MySendAngularTorqueCommand(TorqueCommand);
         return true;
     }
@@ -672,6 +676,7 @@ bool sendFingerPositions(double *pos)
         pointToSend.Position.Actuators.Actuator4 = data.Actuators.Actuator4; 
         pointToSend.Position.Actuators.Actuator5 = data.Actuators.Actuator5; 
         pointToSend.Position.Actuators.Actuator6 = data.Actuators.Actuator6; 
+        pointToSend.Position.Actuators.Actuator7 = data.Actuators.Actuator7; 
         
         if (result == NO_ERROR_KINOVA) {
             MySendBasicTrajectory(pointToSend);
