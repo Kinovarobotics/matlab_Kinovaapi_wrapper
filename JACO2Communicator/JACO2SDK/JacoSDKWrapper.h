@@ -39,6 +39,17 @@ enum class FunctionIndices
     kSendJointVelocities = 15,
     kSendJointTorques = 16,
     kSendFingerPositions = 17,
+    kSendCartesianPositions = 18,
+    kSendCartesianVelocity = 19,
+    kGetDOF = 20,
+    kStartForceControl = 21,
+    kStopForceControl = 22,
+    kGetEndEffectorOffset = 23,
+    kSetEndEffectorOffset = 24,
+    kGetProtectionZone = 25,
+    kEraseProtectionZones = 26,
+    kSetProtectionZone = 27,
+    kGetGlobalTrajectoryInfo = 28,
 };
 
 /* Load library */
