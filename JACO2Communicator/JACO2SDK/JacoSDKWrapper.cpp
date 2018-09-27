@@ -752,64 +752,44 @@ bool sendCartesianVelocity(double *vel)
 
 bool GetDOF (double *DOF)
 {
-    AngularPosition angularForce;
-    
-    if (MyInitAPI != NULL && commandLayer_handle != NULL && MyGetAngularForce != NULL)
+    GeneralInformations data;
+    double TotAct = 0;
+    double NumFinger = 0;
+    Gripper gripper;
+
+    if (MyInitAPI != NULL && commandLayer_handle != NULL && MyGetGeneralInformations != NULL)
     {
         for (int i = 0; i < devicesCount; i++)
         {
             MySetActiveDevice(list[i]);
-            MyGetAngularForce(angularForce); 
-            // Verify if it's a 4 DOF
-            if (abs(angularForce.Actuators.Actuator7) < JACO_SDK_WRAPPER_TINY_NUMBER && 
-                    abs(angularForce.Actuators.Actuator6) < JACO_SDK_WRAPPER_TINY_NUMBER &&
-                    abs(angularForce.Actuators.Actuator5) < JACO_SDK_WRAPPER_TINY_NUMBER && 
-                    abs(angularForce.Actuators.Actuator4) > JACO_SDK_WRAPPER_TINY_NUMBER &&
-                    abs(angularForce.Actuators.Actuator3) > JACO_SDK_WRAPPER_TINY_NUMBER && 
-                    abs(angularForce.Actuators.Actuator2) > JACO_SDK_WRAPPER_TINY_NUMBER &&
-                    abs(angularForce.Actuators.Actuator1) > JACO_SDK_WRAPPER_TINY_NUMBER)
+            MyGetGeneralInformations(data);
+            TotAct = data.ConnectedActuatorCount;
+            /* 
+                *This part will work if it's a gripper from kinova but if you have your own gripper you must comment the section below
+                *Be sure that your gripper dosen't count as an actuator in data.ConnectedActuatorCount
+            */
+            /*  --------------------------------------------------------------- */
+            if (data.FingersTemperatures[2] == 0 && data.FingersTemperatures[1] != 0 && data.FingersTemperatures[0] != 0)
             {
-              *DOF = 4.0;
-            } 
-            // Verify if it's a 6 DOF
-            else if (abs(angularForce.Actuators.Actuator7) < JACO_SDK_WRAPPER_TINY_NUMBER && 
-                    abs(angularForce.Actuators.Actuator6) > JACO_SDK_WRAPPER_TINY_NUMBER &&
-                    abs(angularForce.Actuators.Actuator5) > JACO_SDK_WRAPPER_TINY_NUMBER && 
-                    abs(angularForce.Actuators.Actuator4) > JACO_SDK_WRAPPER_TINY_NUMBER &&
-                    abs(angularForce.Actuators.Actuator3) > JACO_SDK_WRAPPER_TINY_NUMBER && 
-                    abs(angularForce.Actuators.Actuator2) > JACO_SDK_WRAPPER_TINY_NUMBER &&
-                    abs(angularForce.Actuators.Actuator1) > JACO_SDK_WRAPPER_TINY_NUMBER) 
-            {
-              *DOF = 6.0; 
+                NumFinger = 2;
             }
-            // Verify if it's a 7 DOF
-            else if (abs(angularForce.Actuators.Actuator7) > JACO_SDK_WRAPPER_TINY_NUMBER && 
-                    abs(angularForce.Actuators.Actuator6) > JACO_SDK_WRAPPER_TINY_NUMBER &&
-                    abs(angularForce.Actuators.Actuator5) > JACO_SDK_WRAPPER_TINY_NUMBER && 
-                    abs(angularForce.Actuators.Actuator4) > JACO_SDK_WRAPPER_TINY_NUMBER &&
-                    abs(angularForce.Actuators.Actuator3) > JACO_SDK_WRAPPER_TINY_NUMBER && 
-                    abs(angularForce.Actuators.Actuator2) > JACO_SDK_WRAPPER_TINY_NUMBER &&
-                    abs(angularForce.Actuators.Actuator1) > JACO_SDK_WRAPPER_TINY_NUMBER)
+            else if (data.FingersTemperatures[2] != 0 && data.FingersTemperatures[1] != 0 && data.FingersTemperatures[0] != 0)
             {
-             *DOF = 7.0;   
+                NumFinger = 3;
             }
-            else
-            {
-                mexPrintf("Can't get the number of DOF, please proceed to torque calibration\n");
-                *DOF = 0;
-                return false;
-            }
+            /*  --------------------------------------------------------------- */
+            *DOF = TotAct - NumFinger;
+            
+            
         }
-    return true;
+        return true;
     }
     else
     {
         mexPrintf("Library or API not open\n");
-        *DOF = 0;
         return false;
-    }        
+    }           
 }
-
 bool startForceControl()
 {
      if (MyInitAPI != NULL && commandLayer_handle != NULL && MyStartForceControl != NULL)
