@@ -168,7 +168,9 @@ bool openKinovaLibrary()
              // JACOV2_6DOF_SERVICE = 3, 
              // JACOV2_4DOF_SERVICE = 4, 
              // MICO_6DOF_ASSISTIVE = 5, 
-             // JACOV2_6DOF_ASSISTIVE = 6, 
+             // JACOV2_6DOF_ASSISTIVE = 6,
+             // SPHERICAL_6DOF_SERVICE = 7,
+             // SPHERICAL_7DOF_SERVICE = 8
              return true;
         }    
     }
@@ -752,38 +754,41 @@ bool sendCartesianVelocity(double *vel)
 
 bool GetDOF (double *DOF)
 {
-    GeneralInformations data;
-    double TotAct = 0;
-    double NumFinger = 0;
-    Gripper gripper;
-
-    if (MyInitAPI != NULL && commandLayer_handle != NULL && MyGetGeneralInformations != NULL)
+    // JACOV1_ASSISTIVE =       0, 
+    // MICO_6DOF_SERVICE =      1, 
+    // MICO_4DOF_SERVICE =      2, 
+    // JACOV2_6DOF_SERVICE =    3, 
+    // JACOV2_4DOF_SERVICE =    4, 
+    // MICO_6DOF_ASSISTIVE =    5, 
+    // JACOV2_6DOF_ASSISTIVE =  6,
+    // SPHERICAL_6DOF_SERVICE = 7,
+    // SPHERICAL_7DOF_SERVICE = 8   
+            
+    int Type;
+    
+    if (MyInitAPI != NULL && commandLayer_handle != NULL)
     {
-        for (int i = 0; i < devicesCount; i++)
+        Type = list[0].DeviceType;
+        if(Type == 2 || Type == 4)
         {
-            MySetActiveDevice(list[i]);
-            MyGetGeneralInformations(data);
-            TotAct = data.ConnectedActuatorCount;
-            /* 
-                *This part will work if it's a gripper from kinova but if you have your own gripper you must comment the section below
-                *Be sure that your gripper dosen't count as an actuator in data.ConnectedActuatorCount
-            */
-            /*  --------------------------------------------------------------- */
-            if (data.FingersTemperatures[2] == 0 && data.FingersTemperatures[1] != 0 && data.FingersTemperatures[0] != 0)
-            {
-                NumFinger = 2;
-            }
-            else if (data.FingersTemperatures[2] != 0 && data.FingersTemperatures[1] != 0 && data.FingersTemperatures[0] != 0)
-            {
-                NumFinger = 3;
-            }
-            /*  --------------------------------------------------------------- */
-            *DOF = TotAct - NumFinger;
-            
-            
+            *DOF = 4;
+        }
+        else if(Type == 0 || Type == 1 || Type == 3 || Type == 5 || Type == 6 || Type == 7)
+        {
+            *DOF = 6;
+        }
+        else if(Type == 8)
+        {
+            *DOF = 7;
+        }
+        else
+        {
+            mexPrintf("Can't get robot type\n");
+            return false;   
         }
         return true;
     }
+    
     else
     {
         mexPrintf("Library or API not open\n");
@@ -870,12 +875,11 @@ bool setEndEffectorOffset(double *offset)
 
 bool getProtectionZone(double *zone)
 {
-    int result;
     if (MyInitAPI != NULL && commandLayer_handle != NULL && MyGetProtectionZone != NULL)
     {
         ZoneList zoneList;
         MyGetProtectionZone(zoneList);
-        zone[0] = zoneList.NbZones;
+        *zone = zoneList.NbZones;
         return true;
     }
     
