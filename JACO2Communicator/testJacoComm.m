@@ -61,12 +61,12 @@ jc.TrajectoryInfo
 
 
 %% Methods to query joint and finger values all at once
-%%
 pos = getJointAndFingerPos(jc)
 %%
 vel = getJointAndFingerVel(jc)
 %%
 torque = getJointAndFingerTorque(jc)
+
 %%
 temp = getJointAndFingerTemp(jc)
 
@@ -92,7 +92,8 @@ jc.StartForceControl;
 
 
 %% Send joint positions
-q_home = [4.806;2.924;1.004;4.204;1.445;1.323];
+%q_home = [4.806;2.924;1.004;4.204;1.445;1.323]; %6DOF
+q_home = [4.9409;2.8396;0.0016;0.7581;4.6342;4.4963;5.0252]; %7DOF
 jntCmd = q_home;
 sendJointPositionCommand(jc,jntCmd);
 
@@ -106,14 +107,16 @@ sendFingerPositionCommand(jc,fCmd);
 
 
 %% Send joint and finger position
-q_home = [4.806;2.924;1.004;4.204;1.445;1.323];
+%q_home = [4.806;2.924;1.004;4.204;1.445;1.323]; %6DOF
+q_home = [4.9409;2.8396;0.0016;0.7581;4.6342;4.4963;5.0252]; %7DOF
 jntCmd = q_home;
 fCmd = 0*ones(3,1);
 sendJointAndFingerPositionCommand(jc,jntCmd,fCmd);
 
 
 %% Send joint velocities
-jntVelCmd = [0;0;0;0;0;0.8];
+%jntVelCmd = [0;0;0;0;0;0.8]; %6DOF
+jntVelCmd = [0;0;0;0;0;0;0.8]; %7DOF
 for i=1:200
     sendJointVelocityCommand(jc,jntVelCmd);
 end
@@ -121,7 +124,8 @@ end
 
 %% send joint torques
 setTorqueControlMode(jc);
-jntTorqueCmd = [1.5;0.0;0;0;0;0.8];
+%jntTorqueCmd = [1.5;0.0;0;0;0;0.8]; %6DOF
+jntTorqueCmd = [0;0;0;0;0;0;-0.8]; %7DOF
 for i=1:100
    sendJointTorqueCommand(jc,jntTorqueCmd); 
    pause(0.01)

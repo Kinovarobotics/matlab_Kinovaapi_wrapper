@@ -46,7 +46,8 @@ for index = 1:length(JntPos.ans(1,:))
    plot3(coordinates(1,1),coordinates(2,1),coordinates(3,1), '-r*')
    
    % We show the trajectory for the whole simulation
-   plot3(EndEffector(1:index,1),EndEffector(1:index,2),EndEffector(1:index,3))
+   plot3(EndEffector(1:index,1),EndEffector(1:index,2),EndEffector(1:index,3),'or')
+   plot3(EndEffector(:,1),EndEffector(:,2),EndEffector(:,3))
    hold off
 
 end
