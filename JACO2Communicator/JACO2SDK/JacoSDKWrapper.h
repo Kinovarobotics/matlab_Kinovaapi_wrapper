@@ -10,7 +10,7 @@
 #include <iostream>
 
 
-#define NUM_JOINTS  6
+#define NUM_JOINTS  7
 #define NUM_FINGERS 3
 #define JACO_SDK_WRAPPER_TINY_NUMBER 0.00001
 
@@ -39,6 +39,17 @@ enum class FunctionIndices
     kSendJointVelocities = 15,
     kSendJointTorques = 16,
     kSendFingerPositions = 17,
+    kSendCartesianPositions = 18,
+    kSendCartesianVelocity = 19,
+    kGetDOF = 20,
+    kStartForceControl = 21,
+    kStopForceControl = 22,
+    kGetEndEffectorOffset = 23,
+    kSetEndEffectorOffset = 24,
+    kGetProtectionZone = 25,
+    kEraseProtectionZones = 26,
+    kSetProtectionZone = 27,
+    kGetGlobalTrajectoryInfo = 28,
 };
 
 /* Load library */
@@ -96,6 +107,40 @@ extern "C" bool sendJointTorques(double *torque);
 
 /* Send finger positions*/
 extern "C" bool sendFingerPositions(double *pos);
+
+/* Send cartesian positions*/
+extern "C" bool sendCartesianPositions(double *pos);
+
+/* Send cartesian velocity*/
+extern "C" bool sendCartesianVelocity(double *vel);
+
+/* Get number of Degree Of Freedom */
+extern "C" bool GetDOF (double *DOF);
+
+/* Start Admitance mode */
+extern "C" bool startForceControl();
+
+/* Stop Admitance mode*/
+extern "C" bool stopForceControl();
+
+/* Get end effector offset */
+extern "C" bool getEndEffectorOffset(double *offset);
+
+/* Set end effector offset */
+extern "C" bool setEndEffectorOffset(double *offset);
+
+/* Get number of protection zones */
+extern "C" bool getProtectionZone(double *zone);
+
+/* Delete all protection zones */
+extern "C" bool eraseAllProtectionZones();
+
+/* GAdd and set a new protection zone */
+extern "C" bool setProtectionZone(double *zone);
+
+/* Get FIFO informations */
+extern "C" bool getGlobalTrajectoryInfo(double *info);
+
     
     
 

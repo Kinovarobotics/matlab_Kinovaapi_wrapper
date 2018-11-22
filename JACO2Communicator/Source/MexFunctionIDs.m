@@ -22,6 +22,17 @@ classdef MexFunctionIDs < double
         SEND_JNT_VEL (15)
         SEND_JNT_TORQUE (16)
         SEND_FINGER_POS (17)
+        SEND_CART_POS (18)
+        SEND_CART_VEL (19)
+        GET_DOF (20)
+        START_FORCE_CONTROL(21)
+        STOP_FORCE_CONTROL(22)
+        GET_EE_OFFSET(23)
+        SET_EE_OFFSET(24)
+        GET_PROTECT_ZONE(25)
+        ERR_PROTECT_ZONES(26)
+        SET_PROTECT_ZONE(27)
+        GET_GLOB_TRAJECTORY (28)
     end
     
     methods
