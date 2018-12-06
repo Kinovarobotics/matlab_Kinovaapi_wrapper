@@ -48,6 +48,7 @@ int (*MyGetGlobalTrajectoryInfo)(TrajectoryFIFO &Response);
 int (*MySendAdvanceTrajectory)(TrajectoryPoint command);
 int (*MySetPositionLimitDistance)(float Command[COMMAND_SIZE]);
 int (*MySetActuatorPID)(unsigned int address, float P, float I, float D);
+int (*MyRefresDevicesList)();
 
 
 
@@ -65,6 +66,8 @@ bool openKinovaLibrary()
     {
         mexPrintf("Loading library..."); 
         commandLayer_handle = LoadLibrary("CommandLayerWindows.dll");
+//         For Ethernet control choose CommandLayerEthernet.dll
+//         commandLayer_handle = LoadLibrary("CommandLayerEthernet.dll");
         if(commandLayer_handle == NULL )
         {
             mexPrintf("Failed to load library.\n");
@@ -126,6 +129,7 @@ bool openKinovaLibrary()
     MySetPositionLimitDistance = (int(*)(float Command[COMMAND_SIZE])) GetProcAddress(commandLayer_handle, "SetPositionLimitDistance");
     MySetActuatorPID = (int(*)(unsigned int, float, float, float)) GetProcAddress(commandLayer_handle, "SetActuatorPID");
     MyGetGlobalTrajectoryInfo = (int(*)(TrajectoryFIFO &Response)) GetProcAddress(commandLayer_handle, "GetGlobalTrajectoryInfo");
+	MyRefresDevicesList = (int(*)()) GetProcAddress(commandLayer_handle, "RefresDevicesList");
 
 
 
@@ -140,6 +144,7 @@ bool openKinovaLibrary()
         mexPrintf(" Success\n");
 
         result = (*MyInitAPI)();
+		(*MyRefresDevicesList)();
 
         //mexPrintf("Initialization's result: %d\n", result);           
 
