@@ -709,7 +709,7 @@ bool sendCartesianPositions(double *pos)
     TrajectoryPoint pointToSend;
     CartesianPosition data;
     
-    if (MyInitAPI != NULL && commandLayer_handle != NULL && MySendAdvanceTrajectory != NULL)
+    if (MyInitAPI != NULL && commandLayer_handle != NULL && MySendBasicTrajectory != NULL)
     {
         pointToSend.Position.Type = CARTESIAN_POSITION;
         MyGetCartesianCommand(data);
@@ -722,7 +722,7 @@ bool sendCartesianPositions(double *pos)
 		pointToSend.Position.CartesianPosition.ThetaZ = data.Coordinates.ThetaZ + pos[5];
        
             
-       MySendAdvanceTrajectory(pointToSend);
+       MySendBasicTrajectory(pointToSend);
        return true;
     }
     else
@@ -736,7 +736,7 @@ bool sendCartesianVelocity(double *vel)
 {
     TrajectoryPoint pointToSend;
     
-    if (MyInitAPI != NULL && commandLayer_handle != NULL && MySendAdvanceTrajectory != NULL)
+    if (MyInitAPI != NULL && commandLayer_handle != NULL && MySendBasicTrajectory != NULL)
     {
        pointToSend.Position.Type = CARTESIAN_VELOCITY;
        pointToSend.Position.HandMode = HAND_NOMOVEMENT;
@@ -747,7 +747,7 @@ bool sendCartesianVelocity(double *vel)
        pointToSend.Position.CartesianPosition.ThetaX = kRad2deg * vel[3];
        pointToSend.Position.CartesianPosition.ThetaY = kRad2deg * vel[4];
        pointToSend.Position.CartesianPosition.ThetaZ = kRad2deg * vel[5];
-       MySendAdvanceTrajectory(pointToSend);
+       MySendBasicTrajectory(pointToSend);
        return true;
     }
     else
