@@ -1,6 +1,6 @@
 classdef JacoComm < matlab.System & matlab.system.mixin.Propagates ...
         & matlab.system.mixin.CustomIcon ...
-        & matlab.system.mixin.internal.SampleTime
+        & matlab.system.mixin.SampleTime
     % JacoComm Send commands and read sensor data from Jaco robot
     %  See testJacoComm.m for examples of how to use the class.
     %  Copyright 2017 The MathWorks, Inc.
