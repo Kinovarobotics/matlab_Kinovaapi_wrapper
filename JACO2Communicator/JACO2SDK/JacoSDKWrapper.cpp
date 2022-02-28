@@ -709,10 +709,10 @@ bool sendCartesianPositions(double *pos)
     TrajectoryPoint pointToSend;
     CartesianPosition data;
     
-    if (MyInitAPI != NULL && commandLayer_handle != NULL && MySendBasicTrajectory != NULL)
+    if (MyInitAPI != NULL && commandLayer_handle != NULL && MySendBasicTrajectory != NULL && MyGetCartesianPosition != NULL)
     {
         pointToSend.Position.Type = CARTESIAN_POSITION;
-        MyGetCartesianCommand(data);
+        MyGetCartesianPosition(data);
        // Set cartesian position     
         pointToSend.Position.CartesianPosition.X = data.Coordinates.X + pos[0];
     	pointToSend.Position.CartesianPosition.Y = data.Coordinates.Y + pos[1];
@@ -720,6 +720,10 @@ bool sendCartesianPositions(double *pos)
 		pointToSend.Position.CartesianPosition.ThetaX = data.Coordinates.ThetaX + pos[3];
 		pointToSend.Position.CartesianPosition.ThetaY = data.Coordinates.ThetaY + pos[4];
 		pointToSend.Position.CartesianPosition.ThetaZ = data.Coordinates.ThetaZ + pos[5];
+
+        pointToSend.Position.Fingers.Finger1 = data.Fingers.Finger1;
+        pointToSend.Position.Fingers.Finger2 = data.Fingers.Finger2;
+        pointToSend.Position.Fingers.Finger3 = data.Fingers.Finger3;
        
             
        MySendBasicTrajectory(pointToSend);
